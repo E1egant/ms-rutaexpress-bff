@@ -29,6 +29,10 @@ Flujo: `JWT → API Gateway → ms-rutaexpress-bff → microservicio de dominio`
 | `SHIPMENTS_URL`, `CATALOG_URL`, `AUDIT_URL`, `REPORT_URL` | URLs de los microservicios | `localhost:8081..8084` |
 | `PORT` | Puerto del BFF | `8080` |
 
+## Pruebas
+
+`./mvnw test` ejecuta 13 pruebas: 401/403/rol válido/ruta denegada (`SecurityTests`) y validación de token (`TokenValidationTests`): firma RSA correcta y de otra clave, expirado, issuer y audience distintos.
+
 ## Ejecutar
 
 ```bash

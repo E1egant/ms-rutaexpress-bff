@@ -14,6 +14,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.core.DelegatingOAuth2TokenValidator;
+import org.springframework.security.oauth2.core.OAuth2TokenValidator;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.jwt.JwtValidators;
@@ -64,10 +65,14 @@ public class SecurityConfig {
     @Bean
     JwtDecoder jwtDecoder(SecurityProperties props) {
         NimbusJwtDecoder decoder = NimbusJwtDecoder.withJwkSetUri(props.jwkSetUri()).build();
-        decoder.setJwtValidator(new DelegatingOAuth2TokenValidator<>(
-                JwtValidators.createDefaultWithIssuer(props.issuer()),
-                new AudienceValidator(props.audience())));
+        decoder.setJwtValidator(tokenValidator(props));
         return decoder;
+    }
+
+    static OAuth2TokenValidator<Jwt> tokenValidator(SecurityProperties props) {
+        return new DelegatingOAuth2TokenValidator<>(
+                JwtValidators.createDefaultWithIssuer(props.issuer()),
+                new AudienceValidator(props.audience()));
     }
 
     JwtAuthenticationConverter jwtAuthenticationConverter() {
