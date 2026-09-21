@@ -1,0 +1,13 @@
+package cl.rutaexpress.bff;
+
+import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.context.SpringBootTest;
+
+@SpringBootTest
+class MsRutaexpressBffApplicationTests {
+
+	@Test
+	void contextLoads() {
+	}
+
+}
