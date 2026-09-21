@@ -28,11 +28,13 @@ public class ProxyController {
                 "/api/shipments", props.shipmentsUrl(),
                 "/api/catalog", props.catalogUrl(),
                 "/api/audit", props.auditUrl(),
-                "/api/report", props.reportUrl());
+                "/api/reports", props.reportUrl(),
+                "/api/notifications", props.notifyUrl());
     }
 
     @RequestMapping({"/api/shipments/**", "/api/shipments", "/api/catalog/**", "/api/catalog",
-            "/api/audit/**", "/api/audit", "/api/report/**", "/api/report"})
+            "/api/audit/**", "/api/audit", "/api/reports/**", "/api/reports",
+            "/api/notifications/**", "/api/notifications"})
     public ResponseEntity<byte[]> forward(HttpServletRequest request,
             @RequestBody(required = false) byte[] body) {
         String path = request.getRequestURI();

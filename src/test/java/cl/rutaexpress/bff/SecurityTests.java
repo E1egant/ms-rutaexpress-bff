@@ -3,6 +3,7 @@ package cl.rutaexpress.bff;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.jwt;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -38,7 +39,7 @@ class SecurityTests {
 
     @Test
     void rolIncorrectoRetorna403() throws Exception {
-        mvc.perform(get("/api/report/kpis").with(jwt().authorities(new SimpleGrantedAuthority("ROLE_CLIENTE"))))
+        mvc.perform(get("/api/reports/kpis").with(jwt().authorities(new SimpleGrantedAuthority("ROLE_CLIENTE"))))
                 .andExpect(status().isForbidden())
                 .andExpect(jsonPath("$.status").value(403));
     }
@@ -53,6 +54,14 @@ class SecurityTests {
     void rolCorrectoPasaLaAutorizacionYLlegaAlProxy() throws Exception {
         mvc.perform(get("/api/shipments").with(jwt().authorities(new SimpleGrantedAuthority("ROLE_CLIENTE"))))
                 .andExpect(status().isBadGateway());
+    }
+
+    @Test
+    void bodegaPuedeCambiarEstadoPeroClienteNo() throws Exception {
+        mvc.perform(patch("/api/shipments/1/status").with(jwt().authorities(new SimpleGrantedAuthority("ROLE_BODEGA"))))
+                .andExpect(status().isBadGateway());
+        mvc.perform(patch("/api/shipments/1/status").with(jwt().authorities(new SimpleGrantedAuthority("ROLE_CLIENTE"))))
+                .andExpect(status().isForbidden());
     }
 
     @Test

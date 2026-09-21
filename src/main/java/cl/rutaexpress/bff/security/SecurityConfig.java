@@ -31,6 +31,8 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 public class SecurityConfig {
 
     private static final String ADMIN = "ADMIN";
+    private static final String OPERADOR = "OPERADOR";
+    private static final String BODEGA = "BODEGA";
     private static final String DESPACHADOR = "DESPACHADOR";
     private static final String CLIENTE = "CLIENTE";
     private static final String AUDITOR = "AUDITOR";
@@ -44,13 +46,18 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                         .requestMatchers("/actuator/health").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/shipments/**").hasAnyRole(ADMIN, DESPACHADOR, CLIENTE)
-                        .requestMatchers(HttpMethod.POST, "/api/shipments/**").hasAnyRole(ADMIN, DESPACHADOR, CLIENTE)
-                        .requestMatchers(HttpMethod.PUT, "/api/shipments/**").hasAnyRole(ADMIN, DESPACHADOR)
+                        .requestMatchers(HttpMethod.GET, "/api/shipments/**")
+                                .hasAnyRole(ADMIN, OPERADOR, BODEGA, DESPACHADOR, CLIENTE)
+                        .requestMatchers(HttpMethod.POST, "/api/shipments/**")
+                                .hasAnyRole(ADMIN, OPERADOR, DESPACHADOR, CLIENTE)
+                        .requestMatchers(HttpMethod.PATCH, "/api/shipments/**")
+                                .hasAnyRole(ADMIN, OPERADOR, BODEGA, DESPACHADOR)
                         .requestMatchers(HttpMethod.DELETE, "/api/shipments/**").hasRole(ADMIN)
-                        .requestMatchers(HttpMethod.GET, "/api/catalog/**").hasAnyRole(ADMIN, DESPACHADOR)
+                        .requestMatchers(HttpMethod.GET, "/api/catalog/**")
+                                .hasAnyRole(ADMIN, OPERADOR, BODEGA, DESPACHADOR)
                         .requestMatchers("/api/catalog/**").hasRole(ADMIN)
-                        .requestMatchers("/api/report/**").hasRole(ADMIN)
+                        .requestMatchers("/api/reports/**").hasRole(ADMIN)
+                        .requestMatchers("/api/notifications/**").hasRole(ADMIN)
                         .requestMatchers("/api/audit/**").hasAnyRole(ADMIN, AUDITOR)
                         .anyRequest().denyAll())
                 .oauth2ResourceServer(oauth -> oauth
@@ -95,7 +102,7 @@ public class SecurityConfig {
     CorsConfigurationSource corsConfigurationSource(SecurityProperties props) {
         CorsConfiguration cors = new CorsConfiguration();
         cors.setAllowedOrigins(props.allowedOrigins());
-        cors.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        cors.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
         cors.setAllowedHeaders(List.of("Authorization", "Content-Type"));
         cors.setMaxAge(3600L);
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();

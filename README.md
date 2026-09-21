@@ -13,11 +13,13 @@ Flujo: `JWT → API Gateway → ms-rutaexpress-bff → microservicio de dominio`
 
 | Ruta | Métodos / roles |
 |---|---|
-| `/api/shipments/**` | GET, POST: Admin, Despachador, Cliente · PUT: Admin, Despachador · DELETE: Admin |
-| `/api/catalog/**` | GET: Admin, Despachador · resto: Admin |
-| `/api/report/**` | Admin |
+| `/api/shipments/**` | GET: Admin, Operador, Bodega, Despachador, Cliente · POST: Admin, Operador, Despachador, Cliente · PATCH (estado): Admin, Operador, Bodega, Despachador · DELETE: Admin |
+| `/api/catalog/**` | GET: Admin, Operador, Bodega, Despachador · resto: Admin |
+| `/api/reports/**`, `/api/notifications/**` | Admin |
 | `/api/audit/**` | Admin, Auditor |
 | `/actuator/health` | público |
+
+Los roles del token pueden ser los implementados por los servicios (`Admin`, `Operador`, `Bodega`) o los del caso (`Despachador`, `Cliente`, `Auditor`); ver `contratos/roles.md` en el repo central.
 
 ## Variables de entorno
 
@@ -26,12 +28,12 @@ Flujo: `JWT → API Gateway → ms-rutaexpress-bff → microservicio de dominio`
 | `AZURE_TENANT_ID` | Tenant de Azure AD | `common` |
 | `AZURE_API_AUDIENCE` | Audiencia esperada (`api://<API_CLIENT_ID>`) | `api://rutaexpress` |
 | `ALLOWED_ORIGINS` | Orígenes CORS permitidos | `http://localhost:5173` |
-| `SHIPMENTS_URL`, `CATALOG_URL`, `AUDIT_URL`, `REPORT_URL` | URLs de los microservicios | `localhost:8081..8084` |
+| `SHIPMENTS_URL`, `CATALOG_URL`, `NOTIFY_URL`, `REPORT_URL`, `AUDIT_URL` | URLs de los microservicios | `localhost:8081`, `8082`, `8083`, `8084`, `8085` |
 | `PORT` | Puerto del BFF | `8080` |
 
 ## Pruebas
 
-`./mvnw test` ejecuta 13 pruebas: 401/403/rol válido/ruta denegada (`SecurityTests`) y validación de token (`TokenValidationTests`): firma RSA correcta y de otra clave, expirado, issuer y audience distintos.
+`./mvnw test` ejecuta 14 pruebas: 401/403/rol válido/PATCH por rol/ruta denegada (`SecurityTests`) y validación de token (`TokenValidationTests`): firma RSA correcta y de otra clave, expirado, issuer y audience distintos.
 
 ## Ejecutar
 
