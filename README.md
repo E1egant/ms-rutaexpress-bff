@@ -26,7 +26,7 @@ Los roles del token pueden ser los implementados por los servicios (`Admin`, `Op
 | Variable | Descripción | Por defecto |
 |---|---|---|
 | `AZURE_TENANT_ID` | Tenant de Azure AD | `common` |
-| `AZURE_API_AUDIENCE` | Audiencia esperada (`api://<API_CLIENT_ID>`) | `api://rutaexpress` |
+| `AZURE_API_AUDIENCE` | Audiencia esperada: el **GUID** de la API (`<API_CLIENT_ID>`; los tokens v2 traen `aud` = GUID, no `api://…`) | `api://rutaexpress` |
 | `ALLOWED_ORIGINS` | Orígenes CORS permitidos | `http://localhost:5173` |
 | `SHIPMENTS_URL`, `CATALOG_URL`, `NOTIFY_URL`, `REPORT_URL`, `AUDIT_URL` | URLs de los microservicios | `localhost:8081`, `8082`, `8083`, `8084`, `8085` |
 | `PORT` | Puerto del BFF | `8080` |
@@ -39,7 +39,7 @@ Los roles del token pueden ser los implementados por los servicios (`Admin`, `Op
 
 ```bash
 ./mvnw test
-AZURE_TENANT_ID=<tenant> AZURE_API_AUDIENCE=api://<api-client-id> ./mvnw spring-boot:run
+AZURE_TENANT_ID=<tenant> AZURE_API_AUDIENCE=<api-client-id> ./mvnw spring-boot:run
 ```
 
 Coordinación entre repos, contratos y reglas de trabajo: repositorio `Cloud-Native-1`.
