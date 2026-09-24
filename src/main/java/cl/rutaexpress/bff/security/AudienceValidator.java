@@ -19,6 +19,7 @@ public class AudienceValidator implements OAuth2TokenValidator<Jwt> {
             return OAuth2TokenValidatorResult.success();
         }
         return OAuth2TokenValidatorResult.failure(
-                new OAuth2Error("invalid_token", "El token no fue emitido para la audiencia " + audience, null));
+                new OAuth2Error("invalid_token", "El token no fue emitido para la audiencia " + audience
+                        + " (aud recibido: " + jwt.getAudience() + ")", null));
     }
 }
